@@ -4,9 +4,10 @@ from typing import Literal, TypeAlias, cast
 
 import astroid
 import astypes
-from astroid.nodes import Const, FunctionDef, If, Raise, Return
+from astroid.nodes import Const, FunctionDef, Raise, Return
 from astroid.nodes.node_classes import NodeNG
 from astypes._type import Type
+
 from pylsp_inlay_hints.interfaces import InlayHint, InlayHintKind
 
 Kind: TypeAlias = Literal["raise"] | Literal["return"] | Literal["assign"]
@@ -72,7 +73,10 @@ def _walk(
         else:
             return [WalkResult(kind="return", node=node, inferred_type=_type)]
     elif isinstance(node, Raise):
-        return [WalkResult(kind="raise", node=node, literal=node.exc.name)]
+        if hasattr(node.exc, "name"):
+            return [WalkResult(kind="raise", node=node, literal=node.exc.name)]
+        else:
+            return [WalkResult(kind="raise", node=node, literal=node.exc.func.name)]
     elif hasattr(node, "value"):
         if isinstance(node.value, Const):
             return [
@@ -93,7 +97,8 @@ def _walk(
         for body_node in node.body:
             annotations.extend(_walk(body_node))
 
-        groups = itertools.groupby(annotations, key=lambda result: result.kind)
+        annotations.sort(key=lambda annotation: annotation.kind)
+        groups = itertools.groupby(annotations, key=lambda annotation: annotation.kind)
 
         for name, group in groups:
             match name:
@@ -105,14 +110,19 @@ def _walk(
                         hints.append(return_type)
                 case "raise":
                     hints.append(_exceptions(list(group), parent=node))
-    elif isinstance(node, If):
-        for body_node in node.body:
-            hints.extend(_walk(body_node))
-        for or_else_node in node.orelse:
-            hints.extend(_walk(or_else_node))
     elif hasattr(node, "body"):
         for body_node in node.body:
             hints.extend(_walk(body_node))
+
+        if hasattr(node, "orelse"):
+            for or_else_node in node.orelse:
+                hints.extend(_walk(or_else_node))
+        if hasattr(node, "handlers"):
+            for handler in node.handlers:
+                hints.extend(_walk(handler))
+        if hasattr(node, "finalbody"):
+            for final_node in node.finalbody:
+                hints.extend(_walk(final_node))
 
     return hints
 
