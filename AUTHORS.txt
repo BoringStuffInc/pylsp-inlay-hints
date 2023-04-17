@@ -1,0 +1,14 @@
+=======
+Credits
+=======
+
+Development Lead
+----------------
+
+* Marcin Paliwoda <paliwoda.marcin@zoho.com>
+
+Contributors
+------------
+
+None yet. Why not be the first?
+
