@@ -6,7 +6,7 @@ on:
   workflow_call:
 
 jobs:
-  ruff:
+  linting:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -19,13 +19,13 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pdm sync -d
+          pdm sync --group :all
 
       - name: Run ruff
         run: |
           pdm lint
 
-  mypy:
+  type_check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -38,7 +38,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pdm sync -d
+          pdm sync --group :all
 
       - name: Run mypy
         run: |
@@ -57,7 +57,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pdm sync -d
+          pdm sync --group :all
 
       - name: Run formatter
         run: |
