@@ -17,22 +17,27 @@ readme = "README.md"
 license = { text = "MIT" }
 
 [project.optional-dependencies]
-dev = ["mypy>=1.9.0", "black>=24.3.0", "ruff>=0.3.4"]
+dev = ["mypy>=1.9.0", "ruff>=0.3.4"]
 
 [project.entry-points.pylsp]
 pylsp_inlay_hints = "pylsp_inlay_hints.plugin"
+
+[tool.pdm.scripts]
+typecheck = "mypy pylsp_inlay_hints/"
+lint = "ruff check pylsp_inlay_hints/"
+format = "ruff format pylsp_inlay_hints/"
+"format:check" = "ruff format --check pylsp_inlay_hints/"
 
 [build-system]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 
-[tool.black]
-line-length = 120
-target-version = ["py38"]
-
 [tool.ruff]
-select = ["F", "B", "E"]
 line-length = 120
+target-version = "py38"
+
+[tool.ruff.lint]
+select = ["F", "B", "E"]
 unfixable = ["B"]
 
 [tool.mypy]
@@ -48,3 +53,8 @@ warn_no_return = true
 warn_redundant_casts = true
 warn_unreachable = true
 warn_unused_ignores = true
+
+# keeping it since I didn't move 100% to ruff format
+[tool.black]
+line-length = 120
+target-version = ["py38"]
