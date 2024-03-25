@@ -5,7 +5,7 @@ Credits
 Development Lead
 ----------------
 
-* Marcin Paliwoda <paliwoda.marcin@zoho.com>
+* Marcin Paliwoda <boringstuffinc@gmail.com>
 
 Contributors
 ------------

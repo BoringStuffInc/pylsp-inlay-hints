@@ -1,7 +1,7 @@
-from enum import IntEnum
-from typing import TypeAlias, TypedDict
+from enum import Enum
+from typing import TypedDict, Union, Optional
 
-Uri: TypeAlias = str
+Uri = str
 
 
 class TextDocumentIdentifier(TypedDict):
@@ -18,18 +18,22 @@ class Range(TypedDict):
     end: Position
 
 
-class InlayHintKind(IntEnum):
-    Type = 1
-    Parameter = 2
+class InlayHintKind(Enum):
+    TYPE = 1
+    PARAMETER = 2
 
 
 class InlayHint(TypedDict):
     position: Position
     label: str
-    kind: InlayHintKind
-    tooltip: str | None
+    kind: int
+    tooltip: Optional[str]
 
 
 class InlayHintCapabilities(TypedDict):
     resolveProvider: bool
     workDoneProgress: bool
+
+
+class PluginCapabilities(TypedDict):
+    inlayHintProvider: Union[InlayHintCapabilities, bool]

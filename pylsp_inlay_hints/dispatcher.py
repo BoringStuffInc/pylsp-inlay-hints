@@ -4,6 +4,8 @@ from pylsp.workspace import Workspace
 from pylsp_inlay_hints import extractor
 from pylsp_inlay_hints.interfaces import InlayHint, Range, TextDocumentIdentifier
 from pylsp_jsonrpc.dispatchers import MethodDispatcher
+from typing import List, Dict, Any
+
 
 logger = logging.getLogger(__name__)
 
@@ -11,27 +13,23 @@ logger = logging.getLogger(__name__)
 class InlayHintsDispatcher(MethodDispatcher):
     def __init__(self, workspace: Workspace) -> None:
         self.workspace = workspace
-        self.hints: dict[str, list[InlayHint]] = {}
+        self.hints: Dict[str, List[InlayHint]] = {}
 
     def m_text_document__inlay_hint(
         self,
         *,
         textDocument: TextDocumentIdentifier,
         range: Range,
-        **kwargs,
-    ) -> list[InlayHint]:
-        logger.info("PyLSP Inlay Hints: dispatched textDocument/inlayHint request")
+        **kwargs: Dict[str, Any],
+    ) -> List[InlayHint]:
         with self.workspace.report_progress("inlay hints: astypes"):
-            logger.info("PyLSP Inlay Hints: Got inlay hints request for %s", textDocument["uri"])
             document = self.workspace.get_document(textDocument["uri"])
 
             try:
                 self.hints[document.path] = extractor.get_hints(document.source, document.path)
             except Exception as e:
-                logger.error("PyLSP Inlay Hints: failed to extract type hints - %s", e)
+                logger.error("[PyLSP Inlay Hints] Error while extracting inlay hints: %s", e)
                 return []
-            else:
-                logger.info("PyLSP Inlay Hints: calculated inlay hints successfully")
 
             return [
                 hint

@@ -1,5 +1,50 @@
-[tool.mypy]
-ignore_missing_imports = true
+[tool.pdm]
+distribution = true
 
-[tool.flake8]
-max_line_length = 120
+[project]
+name = "pylsp-inlay-hints"
+version = "0.1.0"
+description = "Experimental support for inlay hints provider for `python-lsp-server`"
+authors = [{ name = "Marcin Paliwoda", email = "boringstuffinc@gmail.com" }]
+dependencies = [
+    "astroid>=3.1.0",
+    "astypes>=0.2.6",
+    "python-lsp-server>=1.10.1",
+    "python-lsp-jsonrpc>=1.1.2",
+]
+requires-python = ">=3.8"
+readme = "README.md"
+license = { text = "MIT" }
+
+[project.optional-dependencies]
+dev = ["mypy>=1.9.0", "black>=24.3.0", "ruff>=0.3.4"]
+
+[project.entry-points.pylsp]
+pylsp_inlay_hints = "pylsp_inlay_hints.plugin"
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.black]
+line-length = 120
+target-version = ["py38"]
+
+[tool.ruff]
+select = ["F", "B", "E"]
+line-length = 120
+unfixable = ["B"]
+
+[tool.mypy]
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+pretty = true
+show_column_numbers = true
+show_error_codes = true
+show_error_context = true
+strict_optional = true
+warn_no_return = true
+warn_redundant_casts = true
+warn_unreachable = true
+warn_unused_ignores = true

@@ -1,6 +1,6 @@
 # pylsp-inlay-hints
 
-Inlay hints plugin for PyLSP
+Experimental inlay hints plugin for PyLSP.
 
 This is a plugin for [Python LSP Server](https://github.com/python-lsp/python-lsp-server).
 
@@ -19,13 +19,13 @@ Then run `python-lsp-server` as usual, the plugin will be auto-discovered by
 
 ## Configuration
 
-... TODO ...
+In order for inlay hints to work, your LSP implementation needs to respect `inlayHintProvider` capability in `experimental` section of server capabilties.
 
 ## Features
 
 This plugin adds the following features to `pylsp`:
 
-- ... TODO ...
+* "inlayHintProvider"
 
 ## Developing
 
