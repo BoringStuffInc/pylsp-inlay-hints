@@ -6,7 +6,7 @@ on:
 jobs:
   run_tests:
     name: Run pre-release tests
-    uses: ./.github/workflows/tests.yaml
+    uses: ./.github/workflows/lint.yaml
 
   build_sdist:
     runs-on: ubuntu-latest
