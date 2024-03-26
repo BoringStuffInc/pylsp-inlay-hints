@@ -46,8 +46,8 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
-        os: [ubuntu-latest, macOS-latest, windows-latest]
+        python-version: ["3.8"]
+        os: [ubuntu-latest]
 
     steps:
       - uses: actions/checkout@v3
@@ -61,26 +61,6 @@ jobs:
       - name: Build wheel
         run: |
           pdm build --no-sdist
-
-      - name: Fix linux wheel
-        if: |
-          matrix.os == 'ubuntu-latest'
-        env: 
-          DOCKER_IMAGE: quay.io/pypa/manylinux_2_28_x86_64
-          PLAT: manylinux_2_28_x86_64
-        run: |
-          for whl in dist/*linux_x86_64.whl; do
-              docker_whl="/io/dist/$(basename "$whl")"
-              docker run \
-                --platform=linux/amd64 \
-                --rm \
-                -e PLAT=${{ env.PLAT }} \
-                -v `pwd`:/io \
-                ${{ env.DOCKER_IMAGE }} \
-                auditwheel repair "$docker_whl" --plat "${{ env.PLAT }}" -w /io/dist
-
-              rm $whl
-          done
 
       - name: Upload whl artifact
         uses: actions/upload-artifact@v3
