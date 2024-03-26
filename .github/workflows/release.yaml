@@ -26,7 +26,7 @@ jobs:
 
       - name: Save version
         run: |
-          pdm show pylsp_inlay_hints --version > version.txt
+          echo $(pdm show --version) > version.txt
 
       - name: Upload sdist artifact
         uses: actions/upload-artifact@v3
